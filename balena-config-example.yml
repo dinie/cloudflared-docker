@@ -1,0 +1,8 @@
+ingress:
+  - hostname: hass.yourdomain.com
+    service: http://localhost:8123
+  - hostname: esphome.yourdomain.com
+    service: http://localhost:6052
+  - hostname: influx.yourdomain.com
+    service: http://localhost:8086
+  - service: http_status:404

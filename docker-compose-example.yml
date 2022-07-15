@@ -1,0 +1,48 @@
+version: '3'
+    
+services:
+  hass:
+    image: homeassistant/raspberrypi4-homeassistant
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/*:/dev/*
+    volumes:
+      - hass:/config
+
+  influxdb:
+    image: influxdb:2.3
+    restart: unless-stopped
+    volumes:
+      - influxdb:/var/lib/influxdb2
+    ports:
+      - 8086:8086
+  
+  esp:
+    image: esphome/esphome
+    privileged: true
+    command: ["-q", "dashboard", "/config"]
+    restart: unless-stopped
+    environment:
+      - "ESPHOME_DASHBOARD_USE_PING=true"
+    volumes:
+      - esp:/config
+    ports:
+      - 6052:6052
+
+  cloudflare:
+    build: .
+    network_mode: host
+    restart: always
+    environment:
+      - "CF_TUNNEL_CONFIG_FILE=balena-config-example.yml"
+    env_file: example.env
+    depends_on:
+      - homeassistant
+      - esp
+      - influxdb
+
+  volumes:
+    hass:
+    influxdb:
+    esp:

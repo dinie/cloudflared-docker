@@ -1,0 +1,6 @@
+ingress:
+  - hostname: localservice.yourdomain.com
+    service: http://localhost:3000
+  - hostname: nonlocalservice.yourdomain.com
+    service: https://something.else.com
+  - service: http_status:404
